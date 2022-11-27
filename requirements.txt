@@ -3,3 +3,4 @@ flask_sqlalchemy
 flask_login
 flask_wtf
 WTForms~=3.0.1
+email_validator
