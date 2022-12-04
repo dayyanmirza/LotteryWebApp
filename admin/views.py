@@ -1,5 +1,9 @@
 # IMPORTS
+from cryptography.fernet import Fernet
 from flask import Blueprint, render_template, request, flash
+from sqlalchemy import desc
+from sqlalchemy.orm import make_transient
+
 from app import db
 from models import User, Draw
 
@@ -25,7 +29,6 @@ def view_all_users():
 # create a new winning draw
 @admin_blueprint.route('/create_winning_draw', methods=['POST'])
 def create_winning_draw():
-
     # get current winning draw
     current_winning_draw = Draw.query.filter_by(master_draw=True).first()
     lottery_round = 1
@@ -61,9 +64,8 @@ def create_winning_draw():
 # view current winning draw
 @admin_blueprint.route('/view_winning_draw', methods=['POST'])
 def view_winning_draw():
-
     # get winning draw from DB
-    current_winning_draw = Draw.query.filter_by(master_draw=True,been_played=False).first()
+    current_winning_draw = Draw.query.filter_by(master_draw=True, been_played=False).first()
 
     # if a winning draw exists
     if current_winning_draw:
@@ -78,7 +80,6 @@ def view_winning_draw():
 # view lottery results and winners
 @admin_blueprint.route('/run_lottery', methods=['POST'])
 def run_lottery():
-
     # get current unplayed winning draw
     current_winning_draw = Draw.query.filter_by(master_draw=True, been_played=False).first()
 
@@ -105,7 +106,6 @@ def run_lottery():
 
                 # if user draw matches current unplayed winning draw
                 if draw.numbers == current_winning_draw.numbers:
-
                     # add details of winner to list of results
                     results.append((current_winning_draw.lottery_round, draw.numbers, draw.user_id, user.email))
 

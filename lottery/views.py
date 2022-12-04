@@ -1,7 +1,10 @@
 # IMPORTS
 import logging
 
+from cryptography.fernet import Fernet
 from flask import Blueprint, render_template, request, flash
+from sqlalchemy import desc
+from sqlalchemy.orm import make_transient
 
 from app import db
 from models import Draw
@@ -25,7 +28,8 @@ def add_draw():
     submitted_draw.strip()
 
     # create a new draw with the form data.
-    new_draw = Draw(user_id=1, numbers=submitted_draw, master_draw=False, lottery_round=0)  # TODO: update user_id [user_id=1 is a placeholder]
+    new_draw = Draw(user_id=1, numbers=submitted_draw, master_draw=False,
+                    lottery_round=0)  # TODO: update user_id [user_id=1 is a placeholder]
 
     # add the new draw to the database
     db.session.add(new_draw)
@@ -75,5 +79,3 @@ def play_again():
 
     flash("All played draws deleted.")
     return lottery()
-
-

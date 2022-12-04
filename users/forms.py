@@ -1,4 +1,4 @@
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, SubmitField, PasswordField, EmailField
 from wtforms.validators import Email, DataRequired, EqualTo
 from wtforms.validators import ValidationError
@@ -44,3 +44,11 @@ class RegisterForm(FlaskForm):
                                                                                                         'must be '
                                                                                                         'equal!')])
     submit = SubmitField(validators=[DataRequired()])
+
+
+class LoginForm(FlaskForm):
+    username = StringField(validators=[DataRequired(), Email()])
+    password = PasswordField(validators=[DataRequired()])
+    submit = SubmitField()
+    recaptcha = RecaptchaField()
+    pin = StringField(validators=[DataRequired(), Length(min=6, max=6)])

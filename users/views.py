@@ -1,9 +1,12 @@
 # IMPORTS
+import bcrypt
+import pyotp
+from cryptography.fernet import Fernet
 from flask import Blueprint, render_template, flash, redirect, url_for
 
 from app import db
 from models import User
-from users.forms import RegisterForm
+from users.forms import RegisterForm, LoginForm
 
 # CONFIG
 users_blueprint = Blueprint('users', __name__, template_folder='templates')
@@ -32,6 +35,7 @@ def register():
                         lastname=form.lastname.data,
                         phone=form.phone.data,
                         password=form.password.data,
+                        lotterykey=Fernet.generate_key(),
                         role='user')
 
         # add the new user to the database
@@ -45,9 +49,21 @@ def register():
 
 
 # view user login
-@users_blueprint.route('/login')
+@users_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('users/login.html')
+    # instance of the Login Form class
+    form = LoginForm()
+
+    # if request method is POST or form is valid
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.username.data).first()
+
+        # checks - if (user is Null) OR (passwords do not match) equals True.
+        if not user or not bcrypt.checkpw(form.password.data.encode('utf-8'), user.password) \
+                or not pyotp.TOTP(user.pinkey).verify(form.pin.data):
+            flash('Please check your login details and try again')
+
+    return render_template('users/login.html', form=form)
 
 
 # view user profile
