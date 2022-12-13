@@ -50,5 +50,5 @@ class LoginForm(FlaskForm):
     username = StringField(validators=[DataRequired(), Email()])
     password = PasswordField(validators=[DataRequired()])
     submit = SubmitField()
-    recaptcha = RecaptchaField()
+    # recaptcha = RecaptchaField()
     pin = StringField(validators=[DataRequired(), Length(min=6, max=6)])

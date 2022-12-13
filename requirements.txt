@@ -7,4 +7,6 @@ email_validator
 bcrypt~=4.0.1
 cryptography~=38.0.4
 SQLAlchemy~=1.4.44
-pyotp
+pyotp~=2.7.0
+MarkupSafe~=2.1.1
+Flask-Talisman

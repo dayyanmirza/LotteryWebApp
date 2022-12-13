@@ -12,15 +12,24 @@ class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    # User authentication information.
+    # User authentication information
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
 
-    # Lotterykey information.
+    # Lotterykey information
     lotterykey = db.Column(db.BLOB)
 
     # PIN key
     pinkey = db.Column(db.String(100), nullable=False)
+
+    # DateTime registered on
+    registered_on = db.Column(db.DateTime, nullable=False)
+
+    # current login
+    current_login = db.Column(db.DateTime, nullable=True)
+
+    # last login
+    last_login = db.Column(db.DateTime, nullable=True)
 
     # User information
     firstname = db.Column(db.String(100), nullable=False)
@@ -31,7 +40,7 @@ class User(db.Model, UserMixin):
     # Define the relationship to Draw
     draws = db.relationship('Draw')
 
-    def __init__(self, email, firstname, lastname, phone, password, role, lotterykey):
+    def __init__(self, email, firstname, lastname, phone, password, role):
         self.email = email
         self.firstname = firstname
         self.lastname = lastname
@@ -43,6 +52,11 @@ class User(db.Model, UserMixin):
         self.lotterykey = Fernet.generate_key()
         # Generate PIN key
         self.pinkey = pyotp.random_base32()
+        # Initialised date time.
+        self.registered_on = datetime.now()
+        # current login/ last login initialised
+        self.current_login = None
+        self.last_login = None
 
 
 class Draw(db.Model):
